@@ -7,7 +7,7 @@ export default defineConfig({
     server: {
         proxy: {
             "/api/rest": {
-                target: "https:/lasting-parrot-91.hasura.app/",
+                target: "https:/lasting-parrot-91.hasura.app",
                 changeOrigin: true,
                 secure: true,
             },
