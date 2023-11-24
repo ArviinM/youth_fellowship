@@ -4,7 +4,10 @@ import {Attendee} from '../../types/Attendee.ts';
 import {AttendeeServerResponse} from "../../types/ServerResponse.ts";
 
 export function useAttendees() {
-    const fetchAttendees = (): Promise<Attendee[]> => httpCommon.get<AttendeeServerResponse>('/attendees').then((res) => res.data.attendee)
+    const fetchAttendees = (): Promise<Attendee[]> => httpCommon.get<AttendeeServerResponse>('/attendees').then((res) => {
+        console.log(res)
+        return res.data.attendee
+    })
     return useQuery<Attendee[], Error>({queryKey: ['attendee'], queryFn: fetchAttendees})
 }
 
