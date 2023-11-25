@@ -7,6 +7,10 @@ import {toast} from "react-toastify";
 import {useAttendeeStore} from "../../store/attendeeStore.ts";
 import {useEffect} from "react";
 import {useQueryClient} from '@tanstack/react-query';
+import {useGroups, useGroupSizes} from "../../hooks/attendees/useGroups.ts";
+import {Group} from "../../types/Group.ts";
+import {useCreateAttendeeGroup} from "../../hooks/attendees/useAttendeesGroup.ts";
+import {AttendeeGroup} from "../../types/AttendeeGroup.ts";
 
 
 const AttendeeFormSchema = z.object({
@@ -23,6 +27,9 @@ function AttendeeForm() {
 
     const createAttendeeMutation = useCreateAttendee();
     const updateAttendeeMutation = useUpdateAttendee();
+    const createAttendeeGroupMutation = useCreateAttendeeGroup();
+    const groupSizes = useGroupSizes();
+    const groups = useGroups();
 
     const queryClient = useQueryClient();
 
@@ -40,6 +47,79 @@ function AttendeeForm() {
             reset();
         }
     }, [selectedAttendee, setValue, reset]);
+
+    if (groupSizes.isPending && groups.isPending) {
+        return <div>Loading...</div>
+    }
+
+    const assignUserToGroup = (attendee: Attendee, groups: Group[], groupSizes: Record<number, string[]>) => {
+        // Sort groups by the number of members
+        const sortedGroups = groups.sort((a, b) => (groupSizes[a.id]?.length || 0) - (groupSizes[b.id]?.length || 0));
+
+        let assigned = false;
+
+        for (const group of sortedGroups) {
+            // Check if the user's city is not already in the group
+            if (!groupSizes[group.id] || !groupSizes[group.id].includes(attendee.city)) {
+                // Add the user to the group
+                groupSizes[group.id] = (groupSizes[group.id] || []).concat(attendee.city);
+                assigned = true;
+
+                const attendeeGroup: AttendeeGroup = {
+                    attendeeID: attendee.id,
+                    groupsID: group.id
+                }
+                if (attendee.id) {
+                    createAttendeeGroupMutation.mutate(attendeeGroup, {
+                        onSuccess: async () => {
+                            toast.success(`Added ${attendee.firstname} ${attendee.lastname} from ${attendee.city} to ${group.name}`);
+                            reset();
+                            await queryClient.invalidateQueries({
+                                queryKey: ['groups', 'groupSizes'],
+                                refetchType: 'active',
+                            }, {});
+                        },
+                        onError: (error) => {
+                            toast.error(`Error creating attendee: ${error.message}`);
+                        }
+                    })
+                } else {
+                    console.error('')
+                }
+                break;
+            }
+        }
+
+        // If no group is found, assign to the first group, even if sizes are equal
+        if (!assigned) {
+            const group = groups[0];
+            groupSizes[group.id] = (groupSizes[group.id] || []).concat(attendee.city);
+            assigned = true;
+
+            const attendeeGroup: AttendeeGroup = {
+                attendeeID: attendee.id,
+                groupsID: group.id
+            }
+
+            createAttendeeGroupMutation.mutate(attendeeGroup, {
+                onSuccess: async () => {
+                    toast.success(`Added ${attendee.firstname} ${attendee.lastname} from ${attendee.city} to ${group.name}`);
+                    reset();
+                    await queryClient.invalidateQueries({
+                        queryKey: ['groups', 'groupSizes'],
+                        refetchType: 'active',
+                    }, {});
+                },
+                onError: (error) => {
+                    toast.error(`Error creating attendee: ${error.message}`);
+                }
+            })
+        }
+
+        if (!assigned) {
+            console.log(`Could not assign ${attendee.lastname} to any group`);
+        }
+    };
 
 
     const onSubmit = handleSubmit((data: Attendee) => {
@@ -66,13 +146,21 @@ function AttendeeForm() {
         } else {
             // Create attendee
             createAttendeeMutation.mutate(data, {
-                onSuccess: async () => {
-                    toast.success('Attendee created successfully');
+                onSuccess: async (res) => {
+                    toast.success('Attendee created successfully, wait for assigned group!');
                     reset();
                     await queryClient.invalidateQueries({
                         queryKey: ['attendee'],
                         refetchType: 'active',
                     }, {});
+
+                    const attendeeResult = res.data.insert_attendee_one as Attendee
+
+                    if (groups.data && groupSizes.data) {
+                        assignUserToGroup(attendeeResult, groups.data, groupSizes.data)
+                    } else {
+                        console.log("Something is really wrong")
+                    }
                 },
                 onError: (error) => {
                     toast.error(`Error creating attendee: ${error.message}`);

@@ -8,8 +8,8 @@ export function useAttendeeGroup() {
     return useQuery<AttendeeGroup[], Error>({queryKey: ['attendee_groups'], queryFn: fetchAttendeeGroup})
 }
 
-export function useCreateGroup() {
-    const addAttendeeGroup = ((group: AttendeeGroup): Promise<AttendeeGroup> => httpCommon.post('/attendees-group', group))
+export function useCreateAttendeeGroup() {
+    const addAttendeeGroup = ((attendeeGroup: AttendeeGroup): Promise<AttendeeGroup> => httpCommon.post('/attendees-group', attendeeGroup))
     return useMutation({
         mutationFn: addAttendeeGroup,
         onSuccess: (data) => {

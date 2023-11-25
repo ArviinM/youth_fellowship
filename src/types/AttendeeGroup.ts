@@ -2,6 +2,8 @@ import {Attendee} from "./Attendee.ts";
 import {Group} from "./Group.ts";
 
 export interface AttendeeGroup {
-    attendee: Attendee,
-    group: Group
+    attendee?: Attendee,
+    group?: Group
+    attendeeID?: number,
+    groupsID?: number
 }

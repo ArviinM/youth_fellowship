@@ -9,7 +9,7 @@ export function useAttendees() {
 }
 
 export function useCreateAttendee() {
-    const addAttendee = ((attendee: Attendee): Promise<Attendee> => httpCommon.post('/attendees', attendee))
+    const addAttendee = ((attendee: Attendee) => httpCommon.post('/attendees', attendee))
     return useMutation({
         mutationFn: addAttendee,
         onSuccess: (data) => {
