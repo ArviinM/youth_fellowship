@@ -25,8 +25,7 @@ const GroupTable = () => {
             setActiveGroup(group.id);
         }
     }
-
-
+    
     return (
         <table className="table">
             <thead className="">
