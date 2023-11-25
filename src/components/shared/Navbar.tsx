@@ -1,7 +1,10 @@
 import {NavLink} from "react-router-dom";
 import {useEffect, useState} from "react";
+import {useAuthenticationStore} from "../../store/authenticationStore.ts";
 
 function Navbar() {
+    const {isAuthenticated} = useAuthenticationStore();
+
     const [isdark, setIsdark] = useState(
         JSON.parse(localStorage.getItem('isdark') || "false")
     );
@@ -16,19 +19,22 @@ function Navbar() {
     return (
         <div className="navbar bg-base-100">
             <div className="flex-1">
-                <a className="btn btn-ghost text-xl">Youth Fellowship</a>
+                <a className="btn btn-ghost text-xl font-custom tracking-wide">Potter's House Biñan | YF</a>
             </div>
             <div className="flex-none hidden md:block">
                 <ul className="menu menu-horizontal px-1 space-x-1">
                     <li><NavLink to="/">Home</NavLink></li>
                     <li><NavLink to="/attendee-groups">Attendee's Groups</NavLink></li>
-                    <li><NavLink to="/attendees">Attendees</NavLink></li>
-                    <li><NavLink to="/groups">Groups</NavLink></li>
+                    {isAuthenticated && (<>
+                            <li><NavLink to="/attendees">Attendees</NavLink></li>
+                            <li><NavLink to="/groups">Groups</NavLink></li>
+                        </>
+                    )}
 
                     <label className="swap swap-rotate px-3">
 
                         {/* this hidden checkbox controls the state */}
-                        <input type="checkbox" className="theme-controller input-sm" value="emerald" checked={isdark}
+                        <input type="checkbox" className="theme-controller input-sm" value="cupcake" checked={isdark}
                                onChange={() => setIsdark(!isdark)}/>
 
                         {/* sun icon */}
@@ -78,8 +84,11 @@ function Navbar() {
                             {/* Sidebar content here */}
                             <li><NavLink to="/">Home</NavLink></li>
                             <li><NavLink to="/attendee-groups">Attendee's Groups</NavLink></li>
-                            <li><NavLink to="/attendees">Attendees</NavLink></li>
-                            <li><NavLink to="/groups">Groups</NavLink></li>
+                            {isAuthenticated && (<>
+                                    <li><NavLink to="/attendees">Attendees</NavLink></li>
+                                    <li><NavLink to="/groups">Groups</NavLink></li>
+                                </>
+                            )}
 
                             <label className="swap swap-rotate">
 
