@@ -5,7 +5,7 @@ export interface AttendeeServerResponse {
     attendee: Attendee[];
 }
 
-export interface GroupServerReponse {
+export interface GroupServerResponse {
     groups: Group[];
 }
 
