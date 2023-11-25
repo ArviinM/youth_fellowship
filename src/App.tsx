@@ -7,6 +7,7 @@ import Attendee from "./pages/Attendee.tsx";
 import Navbar from "./components/shared/Navbar.tsx";
 import Home from "./pages/Home.tsx";
 import Groups from "./pages/Groups.tsx";
+import AttendeeGroups from "./pages/AttendeeGroups.tsx";
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                     <Route index path='/' element={<Home/>}/>
                     <Route index path='/attendees' element={<Attendee/>}/>
                     <Route index path='/groups' element={<Groups/>}/>
+                    <Route index path='/attendee-groups' element={<AttendeeGroups/>}/>
                     {/*<Route path='*' element={<NotFound/>}/>*/}
                 </Routes>
             </Router>

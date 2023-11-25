@@ -20,8 +20,10 @@ function Navbar() {
             <div className="flex-none">
                 <ul className="menu menu-horizontal px-1 space-x-1">
                     <li><NavLink to="/">Home</NavLink></li>
+                    <li><NavLink to="/attendee-groups">Attendee's Groups</NavLink></li>
                     <li><NavLink to="/attendees">Attendees</NavLink></li>
                     <li><NavLink to="/groups">Groups</NavLink></li>
+
                     <label className="swap swap-rotate px-3">
 
                         {/* this hidden checkbox controls the state */}
