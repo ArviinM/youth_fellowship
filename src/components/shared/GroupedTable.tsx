@@ -26,17 +26,21 @@ function GroupedTable() {
     const sortAndGroupAttendees = (attendees: AttendeeGroup[]): GroupedRecord => {
         return attendees.reduce((groups, attendeeGroup) => {
             const {group, attendee} = attendeeGroup;
-            const groupId = group.id;
+            if (group && attendee) {
+                const groupId = group.id;
 
-            if (!groups[groupId]) {
-                groups[groupId] = {
-                    groupName: group.name,
-                    groupScore: group.score,
-                    members: [],
-                };
+                if (!groups[groupId]) {
+                    groups[groupId] = {
+                        groupName: group.name,
+                        groupScore: group.score,
+                        members: [],
+                    };
+                }
+
+                groups[groupId].members.push(attendee);
+            } else {
+                throw new Error('Something is wrong.')
             }
-
-            groups[groupId].members.push(attendee);
 
             return groups;
         }, {} as GroupedRecord);
