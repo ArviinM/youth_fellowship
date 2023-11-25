@@ -6,6 +6,7 @@ import {Slide, ToastContainer} from "react-toastify";
 import Attendee from "./pages/Attendee.tsx";
 import Navbar from "./components/shared/Navbar.tsx";
 import Home from "./pages/Home.tsx";
+import Groups from "./pages/Groups.tsx";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                 <Routes>
                     <Route index path='/' element={<Home/>}/>
                     <Route index path='/attendees' element={<Attendee/>}/>
+                    <Route index path='/groups' element={<Groups/>}/>
                     {/*<Route path='*' element={<NotFound/>}/>*/}
                 </Routes>
             </Router>
