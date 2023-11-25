@@ -57,7 +57,7 @@ function Navbar() {
             <div className="flex-none">
                 <div className="drawer drawer-end md:hidden">
                     <input id="my-drawer-4" type="checkbox" className="drawer-toggle"/>
-                    <div className="drawer-content">
+                    <div className="drawer-content ">
                         {/* Page content here */}
                         <label htmlFor="my-drawer-4" className="drawer-button btn btn-primary">
                             Menu
@@ -78,7 +78,7 @@ function Navbar() {
                         </label>
 
                     </div>
-                    <div className="drawer-side">
+                    <div className="drawer-side z-[100000]">
                         <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
                         <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
                             {/* Sidebar content here */}

@@ -25,9 +25,9 @@ const GroupTable = () => {
             setActiveGroup(group.id);
         }
     }
-    
+
     return (
-        <table className="table">
+        <table className="table -z-50">
             <thead className="">
             <tr>
                 <th scope="col"

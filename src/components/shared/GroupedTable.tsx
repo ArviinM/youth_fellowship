@@ -61,23 +61,23 @@ function GroupedTable() {
     return (
         <div className="w-full justify-center items-center">
             {Object.values(groupedAttendees).map((group) => (
-                <div key={group.groupName} className="card rounded-md shadow-md md:max-w-2xl m-3 inline-flex">
+                <div key={group.groupName} className="card rounded-md shadow-md md:max-w-2xl m-3 inline-flex -z-50">
                     <div className="card-body">
-                        <h2 className="text-3xl font-bold">{`${group.groupName} | Score: ${group.groupScore}`}</h2>
+                        <h2 className="text-xl lg:text-3xl font-bold">{`${group.groupName} | Score: ${group.groupScore}`}</h2>
                         <table className="table">
                             <thead>
                             <tr>
                                 <th scope="col"
-                                    className="uppercase tracking-wider font-medium">Name
+                                    className="uppercase tracking-wider font-medium text-xs md:text-md">Name
                                 </th>
                                 <th scope="col"
-                                    className="uppercase tracking-wider font-medium">City
+                                    className="uppercase tracking-wider font-medium text-xs md:text-md">City
                                 </th>
                             </tr>
                             </thead>
                             <tbody className="text-left ">
                             {group.members.map((member: Attendee) => (
-                                <tr key={member.id} className="text-lg">
+                                <tr key={member.id} className="text-md md:text-lg">
                                     <td>{member.firstname} {member.lastname}</td>
                                     <td>{member.city}</td>
                                 </tr>

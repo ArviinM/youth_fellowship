@@ -28,7 +28,7 @@ const AttendeeTable = () => {
 
 
     return (
-        <table className="table">
+        <table className="table -z-50">
             <thead className="">
             <tr>
                 <th scope="col"

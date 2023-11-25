@@ -178,7 +178,7 @@ function AttendeeForm() {
     }
 
     return (
-        <div className="p-6 rounded-md shadow-md md:max-w-xl">
+        <div className="p-6 rounded-md shadow-md md:max-w-xl -z-50">
             <div className="text-3xl font-bold">
                 {selectedAttendee ? 'Edit an Attendee' : 'Add an Attendee'}
             </div>

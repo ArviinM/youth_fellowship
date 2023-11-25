@@ -1,7 +1,7 @@
 function Home() {
 
     return <>
-        <div className="hero min-h-screen absolute"
+        <div className="hero min-h-screen absolute -z-50"
              style={{backgroundImage: 'url(main-image.webp)'}}>
             <div className="hero-overlay bg-opacity-60"></div>
             <div className=" text-center text-neutral-content">
