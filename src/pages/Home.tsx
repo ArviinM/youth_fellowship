@@ -1,6 +1,6 @@
 function Home() {
     return <>
-        <div className='text-3xl'>
+        <div className='px-5 text-3xl'>
             Hello World
         </div>
     </>

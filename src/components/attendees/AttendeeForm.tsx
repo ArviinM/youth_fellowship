@@ -55,7 +55,7 @@ function AttendeeForm() {
                     setSelectedAttendee(null);
                     reset();
                     await queryClient.invalidateQueries({
-                        queryKey: ['attendees'],
+                        queryKey: ['attendee'],
                         refetchType: 'active',
                     }, {});
                 },
@@ -70,7 +70,7 @@ function AttendeeForm() {
                     toast.success('Attendee created successfully');
                     reset();
                     await queryClient.invalidateQueries({
-                        queryKey: ['attendees'],
+                        queryKey: ['attendee'],
                         refetchType: 'active',
                     }, {});
                 },
