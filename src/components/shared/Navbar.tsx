@@ -5,7 +5,7 @@ function Navbar() {
     const [isdark, setIsdark] = useState(
         JSON.parse(localStorage.getItem('isdark') || "false")
     );
-    
+
     useEffect(() => {
         if (isdark !== null) {
             localStorage.setItem('isdark', JSON.stringify(isdark));
@@ -63,9 +63,9 @@ function Navbar() {
                                 stroke="currentColor"
                             >
                                 <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="M4 6h16M4 12h16m-7 6h7"
                                 />
                             </svg>
