@@ -19,7 +19,7 @@ function Navbar() {
     return (
         <div className="navbar bg-base-100">
             <div className="flex-1">
-                <a className="btn btn-ghost text-xl font-custom tracking-wide">Potter's House Biñan | YF</a>
+                <a className="btn btn-ghost text-xl font-custom tracking-wide">YF | PHCC BINAN</a>
             </div>
             <div className="flex-none hidden md:block">
                 <ul className="menu menu-horizontal px-1 space-x-1">
