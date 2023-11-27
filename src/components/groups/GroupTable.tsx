@@ -27,7 +27,7 @@ const GroupTable = () => {
     }
 
     return (
-        <table className="table -z-50">
+        <table className="table">
             <thead className="">
             <tr>
                 <th scope="col"
