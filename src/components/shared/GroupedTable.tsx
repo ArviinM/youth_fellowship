@@ -64,7 +64,7 @@ function GroupedTable() {
                 <div key={group.groupName} className="card rounded-md shadow-md md:max-w-2xl m-3 inline-flex -z-50">
                     <div className="card-body">
                         <h2 className="text-2xl lg:text-5xl font-bold">{`${group.groupName} | Score: ${group.groupScore}`}</h2>
-                        {/* <table className="table">
+                         <table className="table">
                             <thead>
                             <tr>
                                 <th scope="col"
@@ -84,7 +84,7 @@ function GroupedTable() {
                             ))}
                             </tbody>
                         </table>
-                        <p className="uppercase justify-end text-right my-2 font-light text-xs"> Members: {group.members.length}</p> */}
+                        <p className="uppercase justify-end text-right my-2 font-light text-xs"> Members: {group.members.length}</p>
                     </div>
                 </div>
             ))}

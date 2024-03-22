@@ -10,7 +10,7 @@ function Attendee() {
                         <AttendeeForm/>
                         {/*<AttendeeForm/>*/}
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-2 z-20">
                         <AttendeeTable/>
                     </div>
                 </div>
