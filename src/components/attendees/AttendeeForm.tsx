@@ -1,7 +1,7 @@
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
-import {useAttendees, useCreateAttendee, useUpdateAttendee} from "../../hooks/attendees/useAttendees.ts";
+import {useCreateAttendee, useUpdateAttendee} from "../../hooks/attendees/useAttendees.ts";
 import {Attendee} from '../../types/Attendee.ts';
 import {toast} from "react-toastify";
 import {useAttendeeStore} from "../../store/attendeeStore.ts";
@@ -10,7 +10,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {useGroups, useGroupSizes} from "../../hooks/attendees/useGroups.ts";
 import {Group} from "../../types/Group.ts";
 import {useCreateAttendeeGroup} from "../../hooks/attendees/useAttendeesGroup.ts";
-import {AttendeeGroup} from "../../types/AttendeeGroup.ts";
+// import {AttendeeGroup} from "../../types/AttendeeGroup.ts";
 
 import * as XLSX from 'exceljs';
 
@@ -22,19 +22,19 @@ const AttendeeFormSchema = z.object({
     city: z.string().min(3, "At least three letters are required."),
 }).required();
 
-function getAgeGroup(age: number): string {
-    if (age >= 13 && age <= 19) {
-        return 'teenager';
-    } else if (age >= 20 && age <= 29) {
-        return 'young adult';
-    } else if (age >= 30 && age <= 59) {
-        return 'adult / parents';
-    } else if (age >= 60 && age <= 130) {
-        return 'elders';
-    } else {
-        return 'unknown'; // Handle unexpected ages if needed
-    }
-}
+// function getAgeGroup(age: number): string {
+//     if (age >= 13 && age <= 19) {
+//         return 'teenager';
+//     } else if (age >= 20 && age <= 29) {
+//         return 'young adult';
+//     } else if (age >= 30 && age <= 59) {
+//         return 'adult / parents';
+//     } else if (age >= 60 && age <= 130) {
+//         return 'elders';
+//     } else {
+//         return 'unknown'; // Handle unexpected ages if needed
+//     }
+// }
 
 function AttendeeForm() {
     const selectedAttendee = useAttendeeStore((state) => state.selectedAttendee);
@@ -55,7 +55,7 @@ function AttendeeForm() {
         resolver: zodResolver(AttendeeFormSchema),
     });
 
-    const attendees = useAttendees();
+    // const attendees = useAttendees();
 
 
     useEffect(() => {
@@ -227,10 +227,11 @@ function AttendeeForm() {
             reader.readAsArrayBuffer(file);
 
             reader.onload = (e) => {
+                // @ts-ignore
                 const buffer = e.target.result;
 
                 const workbook = new XLSX.Workbook();
-                workbook.xlsx.load(buffer).then((workbook) => {
+                workbook.xlsx.load(buffer as Buffer).then((workbook) => {
                     const worksheet = workbook.worksheets[0];
                     const headerRow = worksheet.getRow(1);
                     const headers = headerRow.values as string[];
