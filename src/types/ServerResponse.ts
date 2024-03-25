@@ -12,4 +12,6 @@ export interface GroupServerResponse {
 
 export interface AttendeeGroupServerResponse {
     attendee_groups: AttendeeGroup[]
+    groups: Group[];
+    attendee: Attendee[];
 }

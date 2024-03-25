@@ -4,12 +4,12 @@ import {Attendee} from '../../types/Attendee.ts';
 import {AttendeeServerResponse} from "../../types/ServerResponse.ts";
 
 export function useAttendees() {
-    const fetchAttendees = (): Promise<Attendee[]> => httpCommon.get<AttendeeServerResponse>('/attendees').then((res) => res.data.attendee)
+    const fetchAttendees = (): Promise<Attendee[]> => httpCommon.get<AttendeeServerResponse>('/attendee').then((res) => res.data.attendee)
     return useQuery<Attendee[], Error>({queryKey: ['attendee'], queryFn: fetchAttendees})
 }
 
 export function useCreateAttendee() {
-    const addAttendee = ((attendee: Attendee) => httpCommon.post('/attendees', attendee))
+    const addAttendee = ((attendee: Attendee) => httpCommon.post('/attendee', attendee))
     return useMutation({
         mutationFn: addAttendee,
         onSuccess: (data) => {
@@ -22,7 +22,7 @@ export function useCreateAttendee() {
 }
 
 export function useUpdateAttendee() {
-    const updateAttendee = ((attendee: Attendee): Promise<Attendee> => httpCommon.put(`/attendees/${attendee.id}`, attendee))
+    const updateAttendee = ((attendee: Attendee): Promise<Attendee> => httpCommon.post(`/attendee/${attendee.id}`, attendee))
     return useMutation({
         mutationFn: updateAttendee,
         onSuccess: (data) => {
@@ -35,7 +35,7 @@ export function useUpdateAttendee() {
 }
 
 export function useDeleteAttendee() {
-    const updateAttendee = ((attendee: Attendee): Promise<Attendee> => httpCommon.delete(`/attendees/${attendee.id}`,))
+    const updateAttendee = ((attendee: Attendee): Promise<Attendee> => httpCommon.delete(`/attendee/${attendee.id}`,))
     return useMutation({mutationFn: updateAttendee})
 }
 

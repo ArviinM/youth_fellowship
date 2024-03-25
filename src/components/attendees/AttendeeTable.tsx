@@ -41,7 +41,7 @@ const AttendeeTable = () => {
                 </th>
                 <th scope="col"
                     className="uppercase tracking-wider font-medium">
-                    Birthdate
+                    Age
                 </th>
             </tr>
             </thead>
@@ -57,7 +57,7 @@ const AttendeeTable = () => {
                         <div className="">{attendee.city}</div>
                     </td>
                     <td className="">
-                        <div className="">{attendee?.birthdate ? attendee.birthdate.toString() : ''}</div>
+                        <div className="">{attendee?.age ? attendee.age.toString() : ''}</div>
                     </td>
                     {/*<td className="px-6 py-4 whitespace-nowrap">*/}
                     {/*    <div className="text-sm text-gray-500"></div>*/}

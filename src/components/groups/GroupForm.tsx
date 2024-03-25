@@ -11,7 +11,7 @@ import {useQueryClient} from '@tanstack/react-query';
 
 const GroupFormSchema = z.object({
     name: z.string({required_error: "Group name is required.",}).min(3, "At least three letters are required."),
-    score: z.string()
+    // score: z.string()
 }).required();
 
 function GroupForm() {
@@ -40,10 +40,14 @@ function GroupForm() {
 
     const onSubmit = handleSubmit((data: Group) => {
         data.name = data.name.trim().charAt(0).toUpperCase() + data.name.trim().slice(1).toLowerCase();
-
+        // data.score = Number(data.score)
+        const newData = {object: { name: data.name, score: Number(data.score)}}
         if (selectedGroup) {
             // Update group
-            updateGroupMutation.mutate({...data, id: selectedGroup.id}, {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            updateGroupMutation.mutate({ ...newData, id: selectedGroup.id },
+                {
                 onSuccess: async () => {
                     toast.success('Group updated successfully');
                     setSelectedGroup(null);
@@ -59,7 +63,9 @@ function GroupForm() {
             })
         } else {
             // Create group
-            createGroupMutation.mutate(data, {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            createGroupMutation.mutate(newData, {
                 onSuccess: async () => {
                     toast.success('Group created successfully');
                     reset();

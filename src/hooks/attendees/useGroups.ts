@@ -4,14 +4,12 @@ import {Group} from '../../types/Group.ts';
 import {GroupServerResponse} from "../../types/ServerResponse.ts";
 
 interface AttendeeGroup {
-    group: {
         id: number;
         attendee_groups: {
             attendee: {
                 city: string;
             }
         }[]
-    }
 }
 
 export function useGroups() {
@@ -21,15 +19,15 @@ export function useGroups() {
 
 export function useGroupSizes() {
     const fetchGroupSizes = (): Promise<Record<number, string[]>> => {
-        return httpCommon.get('/groups-sizes')
+        return httpCommon.get('/groups')
             .then((response) => {
                 const groupSizes: Record<number, string[]> = {};
-                response.data.attendee_groups.forEach((attendeeGroup: AttendeeGroup) => {
-                    const groupId = attendeeGroup.group.id;
-                    const cities = attendeeGroup.group.attendee_groups.map((attendeeData) => attendeeData.attendee.city);
+                response.data.groups.forEach((attendeeGroup: AttendeeGroup) => {
+                    const groupId = attendeeGroup.id;
+                    const cities = attendeeGroup.attendee_groups.map((attendeeData) => attendeeData.attendee.city);
                     groupSizes[groupId] = cities;
                 });
-                
+
                 return groupSizes;
             })
             .catch((error) => {
@@ -55,7 +53,7 @@ export function useCreateGroup() {
 }
 
 export function useUpdateGroup() {
-    const updateGroup = ((group: Group): Promise<Group> => httpCommon.put(`/groups/${group.id}`, group))
+    const updateGroup = ((group: Group): Promise<Group> => httpCommon.post(`/groups/${group.id}`, group))
     return useMutation({
         mutationFn: updateGroup,
         onSuccess: (data) => {

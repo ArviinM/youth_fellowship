@@ -2,6 +2,6 @@ export interface Attendee {
     id?: number;
     firstname: string;
     lastname: string;
-    birthdate: Date;
+    age: number;
     city: string;
 }
