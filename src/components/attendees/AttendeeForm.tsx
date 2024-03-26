@@ -1,7 +1,12 @@
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
-import {useCreateAttendee, useUpdateAttendee} from "../../hooks/attendees/useAttendees.ts";
+import {
+    AttendeeAgeGroupSizes, getAgeGroup,
+    useAttendeeAgeGroup,
+    useCreateAttendee,
+    useUpdateAttendee
+} from "../../hooks/attendees/useAttendees.ts";
 import {Attendee} from '../../types/Attendee.ts';
 import {toast} from "react-toastify";
 import {useAttendeeStore} from "../../store/attendeeStore.ts";
@@ -22,19 +27,7 @@ const AttendeeFormSchema = z.object({
     city: z.string().min(3, "At least three letters are required."),
 }).required();
 
-// function getAgeGroup(age: number): string {
-//     if (age >= 13 && age <= 19) {
-//         return 'teenager';
-//     } else if (age >= 20 && age <= 29) {
-//         return 'young adult';
-//     } else if (age >= 30 && age <= 59) {
-//         return 'adult / parents';
-//     } else if (age >= 60 && age <= 130) {
-//         return 'elders';
-//     } else {
-//         return 'unknown'; // Handle unexpected ages if needed
-//     }
-// }
+
 
 function AttendeeForm() {
     const selectedAttendee = useAttendeeStore((state) => state.selectedAttendee);
@@ -56,6 +49,7 @@ function AttendeeForm() {
     });
 
     // const attendees = useAttendees();
+    const ageGroupSizes = useAttendeeAgeGroup()
 
 
     useEffect(() => {
@@ -69,27 +63,32 @@ function AttendeeForm() {
         }
     }, [selectedAttendee, setValue, reset]);
 
-    if (groupSizes.isPending && groups.isPending) {
+    if (groupSizes.isPending && groups.isPending && ageGroupSizes.isPending) {
         return <div>Loading...</div>
     }
 
-    const assignUserToGroup = (attendee: Attendee, groups: Group[], groupSizes: Record<number, string[]>) => {
+    const assignUserToGroup = (attendee: Attendee, groups: Group[], groupSizes: Record<number, string[]>, ageGroupSizes: AttendeeAgeGroupSizes[]) => {
         // Sort groups by the number of members
         const sortedGroups = groups.sort((a, b) => (groupSizes[a.id]?.length || 0) - (groupSizes[b.id]?.length || 0));
-
+        const attendeeAgeGroup = getAgeGroup(attendee.age);
         let assigned = false;
 
         for (const group of sortedGroups) {
-            // Check if the user's city is not already in the group
-            if (!groupSizes[group.id] || !groupSizes[group.id].includes(attendee.city)) {
-                // Add the user to the group
-                groupSizes[group.id] = (groupSizes[group.id] || []).concat(attendee.city);
-                assigned = true;
 
-                // const attendeeGroup: AttendeeGroup = {
-                //     attendeeID: attendee.id,
-                //     groupsID: group.id
-                // }
+            const groupId = group.id;
+
+            // Find corresponding age group sizes
+            const ageGroupCounts = ageGroupSizes.find((item) => item.group_id === groupId);
+
+            // Combined Age Group and City Check
+            if (
+                ageGroupCounts &&
+                ageGroupCounts[attendeeAgeGroup as keyof AttendeeAgeGroupSizes] < 2 &&
+                !groupSizes[groupId].includes(attendee.city)
+            ) {
+                // Add the user to the group
+                groupSizes[groupId] = (groupSizes[groupId] || []).concat(attendee.city);
+                assigned = true;
 
                 const newDataAttendeeGroup = {object: {
                         attendeeID: attendee.id,
@@ -104,7 +103,7 @@ function AttendeeForm() {
                             toast.success(`Added ${attendee.firstname} ${attendee.lastname} from ${attendee.city} to ${group.name}`);
                             reset();
                             await queryClient.invalidateQueries({
-                                queryKey: ['groups', 'groupSizes'],
+                                queryKey: ['groups', 'groupSizes', 'attendeeAgeGroups'],
                                 refetchType: 'active',
                             }, {});
                         },
@@ -113,8 +112,9 @@ function AttendeeForm() {
                         }
                     })
                 } else {
-                    console.error('')
+                    console.error("Error Occured")
                 }
+
                 break;
             }
         }
@@ -137,7 +137,7 @@ function AttendeeForm() {
                     toast.success(`Added ${attendee.firstname} ${attendee.lastname} from ${attendee.city} to ${group.name}`);
                     reset();
                     await queryClient.invalidateQueries({
-                        queryKey: ['groups', 'groupSizes'],
+                        queryKey: ['groups', 'groupSizes', 'attendeeAgeGroups'],
                         refetchType: 'active',
                     }, {});
                 },
@@ -151,6 +151,8 @@ function AttendeeForm() {
             console.log(`Could not assign ${attendee.lastname} to any group`);
         }
     };
+
+    // console.log(ageGroupSizes.data)
 
 
     const onSubmit = handleSubmit((data: Attendee) => {
@@ -198,8 +200,8 @@ function AttendeeForm() {
                     console.log(res.data)
                     const attendeeResult = res.data.insert_attendee.returning[0] as Attendee
 
-                    if (groups.data && groupSizes.data) {
-                        assignUserToGroup(attendeeResult, groups.data, groupSizes.data)
+                    if (groups.data && groupSizes.data && ageGroupSizes.data) {
+                        assignUserToGroup(attendeeResult, groups.data, groupSizes.data, ageGroupSizes.data)
                     } else {
                         console.log("Something is really wrong")
                     }
@@ -227,7 +229,8 @@ function AttendeeForm() {
             reader.readAsArrayBuffer(file);
 
             reader.onload = (e) => {
-                // @ts-ignore
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 const buffer = e.target.result;
 
                 const workbook = new XLSX.Workbook();
@@ -281,8 +284,8 @@ function AttendeeForm() {
                     const attendeeResult = res.data.insert_attendee.returning as Attendee[]
 
                     attendeeResult.forEach((result) => {
-                        if (groups.data && groupSizes.data) {
-                            assignUserToGroup(result, groups.data, groupSizes.data)
+                        if (groups.data && groupSizes.data && ageGroupSizes.data) {
+                            assignUserToGroup(result, groups.data, groupSizes.data, ageGroupSizes.data)
                         } else {
                             console.log("Something is really wrong")
                         }
@@ -372,7 +375,7 @@ function AttendeeForm() {
                             <option value="Bagong Kalsada">Bagong Kalsada</option>
                             <option value="Balibago">Balibago</option>
                             <option value="Bay">Bay</option>
-                            <option value="Biñan">Biñan</option>
+                            <option value="Binan">Biñan</option>
                             <option value="Cabuyao">Cabuyao</option>
                             <option value="Cabuyao">Calamba</option>
                             <option value="Calauan">Calauan</option>
@@ -385,7 +388,7 @@ function AttendeeForm() {
                             <option value="Silang Bayan">Silang Bayan</option>
                             <option value="Silang Narra">Silang Narra</option>
                             <option value="Simara">Simara</option>
-                            <option value="Santa Cruz">Santa Cruz</option>
+                            <option value="Sta. Cruz">Sta. Cruz</option>
                             <option value="Santa Rosa">Santa Rosa</option>
                             <option value="Timbao">Timbao</option>
                             <option value="Victoria">Victoria</option>
@@ -409,12 +412,9 @@ function AttendeeForm() {
                         <input type="file" onChange={handleFileUpload} className="file-input w-full max-w-xs"/>
                     </div>
                     <div>
-                    <button type="button" onClick={displayExcelData} className='btn btn-primary w-full uppercase'>Display</button>
+                    <button type="button" onClick={displayExcelData} className='btn btn-primary w-full uppercase'>Assign User to Groups</button>
                     </div>
-
                 </div>
-                {/*{displayExcelData()}*/}
-
             </form>
         </div>
     );

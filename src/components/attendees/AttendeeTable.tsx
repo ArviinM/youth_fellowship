@@ -26,7 +26,7 @@ const AttendeeTable = () => {
         }
     }
 
-
+    console.log({data})
     return (
         <table className="table -z-50">
             <thead className="">
